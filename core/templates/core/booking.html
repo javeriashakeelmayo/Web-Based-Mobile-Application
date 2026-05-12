@@ -1,0 +1,54 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="py-12 px-6 max-w-lg mx-auto bg-white shadow-xl rounded-2xl mt-10 mb-20 border border-gray-100">
+    <div class="text-center mb-10">
+        <h2 class="text-3xl font-serif font-bold text-premium-green">Table Reservation</h2>
+        <p class="text-gray-500 italic mt-2">Secure your spot at Atlas Dining</p>
+    </div>
+
+    <form method="POST" action="{% url 'booking' %}" class="space-y-6">
+        {% csrf_token %}
+        
+        <div>
+            <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Full Name</label>
+            <input type="text" name="name" required placeholder="Enter your name" 
+                   class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Phone Number</label>
+                <input type="tel" name="phone" required placeholder="03xx-xxxxxxx" 
+                       class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Guests</label>
+                <select name="guests" class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+                    <option value="1">1 Person</option>
+                    <option value="2" selected>2 People</option>
+                    <option value="4">4 People</option>
+                    <option value="6">6+ People</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Date</label>
+                <input type="date" name="date" required 
+                       class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Time</label>
+                <input type="time" name="time" required 
+                       class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+            </div>
+        </div>
+
+        <button type="submit" class="w-full btn-premium py-4 rounded-xl font-bold tracking-widest text-sm shadow-lg transform active:scale-95 transition">
+            CONFIRM RESERVATION
+        </button>
+    </form>
+</div>
+{% endblock %}

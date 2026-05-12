@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlas Dining | Premium Fast Food</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+       
+        .bg-premium-green { background-color: #1A3C34; } 
+        .text-premium-gold { color: #C5A059; }
+        .btn-premium { background-color: #C5A059; color: #1A3C34; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <nav class="bg-premium-green p-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
+    <a href="{% url 'home' %}" class="inline-block">
+        <h1 class="text-xl font-bold tracking-widest text-premium-gold uppercase">
+            ATLAS DINING
+        </h1>
+    </a>
+
+    <div class="space-x-4">
+        <a href="{% url 'menu' %}" class="text-white text-sm font-bold hover:text-premium-gold transition">Menu</a>
+        <a href="{% url 'booking' %}" class="text-white text-sm font-bold hover:text-premium-gold transition">Book</a>
+    </div>
+</nav>
+
+    {% block content %}
+    {% endblock %}
+
+    <footer class="bg-gray-100 p-8 text-center text-gray-500 text-sm">
+        &copy; 2026 Atlas Dining. All Rights Reserved.
+    </footer>
+</body>
+</html>

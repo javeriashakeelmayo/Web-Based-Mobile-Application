@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="relative h-[60vh] flex items-center justify-center bg-premium-green overflow-hidden">
+    <div class="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1514356024133-317926b09594?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
+    
+    <div class="relative text-center px-6 z-10">
+        <h2 class="text-premium-gold text-sm tracking-[0.3em] font-light mb-2">ESTABLISHED 2026</h2>
+        <h1 class="text-white text-5xl md:text-7xl font-serif font-bold mb-6 italic">Atlas Dining</h1>
+        <p class="text-gray-300 text-lg mb-8 max-w-md mx-auto">Elevated Fast Food. Crafted for the Global Palate.</p>
+        <div class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 justify-center">
+            <a href="{% url 'menu' %}" class="btn-premium px-8 py-4 rounded-none font-bold tracking-widest text-sm transition transform hover:scale-105">VIEW MENU</a>
+            <a href="{% url 'booking' %}" class="relative z-20 border border-premium-gold text-premium-gold px-8 py-4 rounded-none font-bold tracking-widest text-sm hover:bg-premium-gold hover:text-white transition">
+            BOOK A TABLE
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="bg-premium-gold text-premium-green py-4 text-center">
+    <p class="font-bold tracking-tighter text-sm">LTD OFFER: USE CODE <span class="underline">ATLAS20</span> FOR 20% OFF YOUR FIRST ORDER</p>
+</div>
+
+<div class="py-16 px-6 max-w-6xl mx-auto">
+    <div class="flex justify-between items-end mb-12">
+        <div>
+            <h3 class="text-3xl font-serif text-premium-green font-bold">Today's Specials</h3>
+            <p class="text-gray-500 italic">Hand-picked by our Master Chefs</p>
+        </div>
+        <a href="{% url 'menu' %}" class="text-premium-green font-bold border-b-2 border-premium-gold pb-1">All Items</a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {% for item in specials %}
+        <div class="group cursor-pointer">
+            <div class="relative overflow-hidden mb-4">
+                <img src="{% if item.image_url %}{{ item.image_url }}{% else %}https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800&auto=format&fit=crop{% endif %}" 
+                class="w-full h-64 object-cover transition duration-500 group-hover:scale-110" 
+                alt="{{ item.name }}">
+                <div class="absolute top-4 right-4 bg-white px-3 py-1 text-sm font-bold shadow-lg">${{ item.price }}</div>
+            </div>
+            <h4 class="text-xl font-bold text-premium-green mb-1">{{ item.name }}</h4>
+            <p class="text-gray-600 text-sm line-clamp-2 italic">{{ item.description }}</p>
+        </div>
+        {% empty %}
+        <p class="text-center col-span-3 text-gray-400">Add some items in Admin to see them here.</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="py-16 px-6 max-w-3xl mx-auto bg-white">
+    <h3 class="text-3xl font-serif text-center text-premium-green font-bold mb-10 italic">Common Questions</h3>
+    <div class="space-y-4">
+        <details class="group border-b border-gray-100 pb-4 cursor-pointer">
+            <summary class="flex justify-between items-center font-bold text-premium-green list-none">
+                <span>What are your opening hours?</span>
+                <span class="text-premium-gold transition group-open:rotate-180">▼</span>
+            </summary>
+            <p class="mt-4 text-gray-500 text-sm italic">We serve from 12:00 PM to 11:00 PM daily. </p>
+        </details>
+
+        <details class="group border-b border-gray-100 pb-4 cursor-pointer">
+            <summary class="flex justify-between items-center font-bold text-premium-green list-none">
+                <span>Where are you located?</span>
+                <span class="text-premium-gold transition group-open:rotate-180">▼</span>
+            </summary>
+            <p class="mt-4 text-gray-500 text-sm italic">Find us at the heart of the city's food district. </p>
+        </details>
+    </div>
+</div>
+{% endblock %}
+
+

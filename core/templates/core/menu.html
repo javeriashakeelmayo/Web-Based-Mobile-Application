@@ -1,0 +1,65 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="bg-white min-h-screen pb-20">
+    <div class="sticky top-16 bg-white shadow-sm z-40 overflow-x-auto whitespace-nowrap px-4 py-3 no-scrollbar">
+        <a href="{% url 'menu' %}" class="inline-block px-6 py-2 rounded-full border border-premium-green mr-2 text-sm {% if not request.GET.category %}bg-premium-green text-white{% endif %}">All</a>
+        {% for cat in categories %}
+        <a href="?category={{ cat.id }}" class="inline-block px-6 py-2 rounded-full border border-premium-green mr-2 text-sm {% if request.GET.category == cat.id|stringformat:'i' %}bg-premium-green text-white{% endif %}">
+            {{ cat.name }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <div class="p-6 grid grid-cols-1 gap-8">
+        {% for item in items %}
+        <div class="flex items-center space-x-4 border-b border-gray-100 pb-6">
+            <div class="flex-1">
+                <h4 class="text-lg font-bold text-premium-green">{{ item.name }}</h4>
+                <p class="text-gray-500 text-xs italic mb-2">{{ item.description }}</p>
+                <span class="font-bold text-premium-green">${{ item.price }}</span>
+            </div>
+            <div class="relative">
+                <img src="{% if item.image_url %}{{ item.image_url }}{% else %}https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200&h=200&fit=crop{% endif %}"
+                class="w-24 h-24 object-cover rounded-lg"
+                alt="{{ item.name }}">
+                <button onclick="addToCart('{{ item.name }}', '{{ item.price }}')" class="absolute -bottom-2 left-1/2 -translate-x-1/2 btn-premium text-xs px-4 py-1 rounded-full shadow-md font-bold uppercase tracking-wider">Add</button>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center py-10 text-gray-400">No items found in this category.</p>
+        {% endfor %}
+    </div>
+
+    <div id="cart-summary" class="fixed bottom-6 left-6 right-6 bg-premium-green text-white p-4 flex justify-between items-center rounded-xl shadow-2xl hidden transform translate-y-20 transition-all duration-300">
+        <div class="flex items-center space-x-3">
+            <div class="bg-premium-gold text-premium-green font-bold px-2 py-1 rounded-md text-xs" id="cart-count">0</div>
+            <span class="font-bold tracking-widest text-sm uppercase">View Your Order</span>
+        </div>
+        <span class="font-bold text-premium-gold" id="cart-total">$0.00</span>
+    </div>
+</div>
+
+<script>
+    let cart = [];
+    let total = 0;
+
+    function addToCart(name, price) {
+        cart.push({name, price: parseFloat(price)});
+        total += parseFloat(price);
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const cartBar = document.getElementById('cart-summary');
+        const cartCount = document.getElementById('cart-count');
+        const cartTotal = document.getElementById('cart-total');
+
+        if (cart.length > 0) {
+            cartBar.classList.remove('hidden', 'translate-y-20');
+            cartCount.innerText = cart.length;
+            cartTotal.innerText = `$${total.toFixed(2)}`;
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="py-10 px-6 max-w-2xl mx-auto mb-20 bg-gray-50">
+    <h2 class="text-3xl font-serif font-bold text-premium-green mb-6 text-center italic">Active Offers</h2>
+    <div class="bg-premium-green p-6 rounded-2xl text-white mb-12 shadow-xl relative overflow-hidden">
+        <h3 class="text-premium-gold font-bold tracking-widest text-xs mb-2 uppercase">Summer Special</h3>
+        <p class="text-xl font-bold mb-4">20% OFF on all Atlas Dining Specials!</p>
+        <div class="flex items-center space-x-2 bg-white/10 p-3 rounded-xl border border-white/20">
+            <span class="text-lg font-mono tracking-widest" id="promoCode">ATLAS20</span>
+            <button onclick="copyPromo()" class="btn-premium px-4 py-2 rounded-lg text-xs font-bold transition active:scale-95">COPY</button>
+        </div>
+    </div>
+
+    <h2 class="text-3xl font-serif font-bold text-premium-green mb-8 text-center italic">Common Questions</h2>
+    <div class="space-y-4">
+        <details class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <summary class="flex justify-between items-center cursor-pointer font-bold text-premium-green list-none">
+                <span>What are the opening hours?</span>
+                <span class="group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="mt-4 text-gray-500 text-sm">We are open daily from 12:00 PM to 11:00 PM for fine dining and delivery.</p>
+        </details>
+
+        <details class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <summary class="flex justify-between items-center cursor-pointer font-bold text-premium-green list-none">
+                <span>Do you offer home delivery?</span>
+                <span class="group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="mt-4 text-gray-500 text-sm">Yes, we deliver across the city. Delivery options are available in our menu.</p>
+        </details>
+    </div>
+</div>
+
+<script>
+    function copyPromo() {
+        navigator.clipboard.writeText("ATLAS20");
+        alert("Promo Code Copied! ");
+    }
+</script>
+{% endblock %}
