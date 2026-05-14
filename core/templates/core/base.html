@@ -1,6 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlas Dining | Premium Fast Food</title>
@@ -12,6 +16,15 @@
         .btn-premium { background-color: #C5A059; color: #1A3C34; }
     </style>
 </head>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/static/sw.js')
+                .then(reg => console.log('App Mode Active!'))
+                .catch(err => console.log('PWA registration failed', err));
+        });
+    }
+</script>
 <body class="bg-gray-50 font-sans">
     <nav class="bg-premium-green p-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
     <a href="{% url 'home' %}" class="inline-block">
