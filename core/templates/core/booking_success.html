@@ -1,34 +1,26 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="py-20 px-6 text-center max-w-md mx-auto">
-    <h2 class="text-3xl font-serif font-bold text-premium-green">Booking Confirmed!</h2>
-    <p class="text-gray-500 mt-4">Thank you, <strong>{{ booking.name }}</strong>. Your table is reserved.</p>
-    
-    <div class="bg-gray-50 p-8 rounded-2xl mt-8 text-left border border-gray-100 shadow-sm">
-        <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-6 font-bold">Reservation Details</p>
-        <div class="space-y-4 text-sm">
-            <div class="flex justify-between border-b border-gray-100 pb-2">
-                <span class="text-gray-500">Reference</span>
-                <span class="font-bold text-premium-green">#{{ booking.reference_id }}</span>
-            </div>
-            <div class="flex justify-between border-b border-gray-100 pb-2">
-                <span class="text-gray-500">Date</span>
-                <span class="font-bold">{{ booking.date }}</span>
-            </div>
-            <div class="flex justify-between border-b border-gray-100 pb-2">
-                <span class="text-gray-500">Time</span>
-                <span class="font-bold">{{ booking.time_slot }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="text-gray-500">Guests</span>
-                <span class="font-bold">{{ booking.guests }} People</span>
-            </div>
-        </div>
-    </div>
+<div class="min-h-[80vh] flex items-center justify-center bg-gray-50 px-4">
+    <div class="bg-white max-w-md w-full rounded-2xl shadow-xl p-8 text-center border-t-8 border-premium-green">
+        <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🎉</div>
+        <h2 class="text-2xl font-black text-premium-green">Reservation Confirmed!</h2>
+        <p class="text-gray-500 text-sm mt-1">We have saved your premium spot at Atlas Dining.</p>
 
-    <a href="{% url 'home' %}" class="inline-block mt-10 text-premium-green font-bold border-b-2 border-premium-gold pb-1 hover:text-premium-gold transition">
-        Back to Home
-    </a>
+        <div class="bg-gray-50 rounded-xl p-4 my-6 border border-dashed border-gray-200">
+            <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">Your Booking Reference</span>
+            <div class="text-2xl font-mono font-black text-gray-800 mt-1">AD-48291</div>
+        </div>
+
+        <div class="text-left bg-gray-50 p-4 rounded-xl text-xs space-y-2 text-gray-600 mb-6">
+            <div><strong>Guest Name:</strong> {{ booking.name|default:"Valued Customer" }}</div>
+            <div><strong>Total Guests:</strong> {{ booking.guests|default:"2" }} Persons</div>
+            <div><strong>Time Slot:</strong> {{ booking.time_slot|default:"08:00 PM" }}</div>
+        </div>
+
+        <a href="{% url 'menu' %}" class="block bg-premium-green text-white font-bold py-3 rounded-xl uppercase tracking-wider text-sm shadow-md hover:bg-opacity-95">
+            Explore Menu Items
+        </a>
+    </div>
 </div>
 {% endblock %}

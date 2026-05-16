@@ -1,41 +1,73 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="py-10 px-6 max-w-2xl mx-auto mb-20 bg-gray-50">
-    <h2 class="text-3xl font-serif font-bold text-premium-green mb-6 text-center italic">Active Offers</h2>
-    <div class="bg-premium-green p-6 rounded-2xl text-white mb-12 shadow-xl relative overflow-hidden">
-        <h3 class="text-premium-gold font-bold tracking-widest text-xs mb-2 uppercase">Summer Special</h3>
-        <p class="text-xl font-bold mb-4">20% OFF on all Atlas Dining Specials!</p>
-        <div class="flex items-center space-x-2 bg-white/10 p-3 rounded-xl border border-white/20">
-            <span class="text-lg font-mono tracking-widest" id="promoCode">ATLAS20</span>
-            <button onclick="copyPromo()" class="btn-premium px-4 py-2 rounded-lg text-xs font-bold transition active:scale-95">COPY</button>
+<div class="bg-gray-50 min-h-screen py-10">
+    <div class="max-w-xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-premium-green text-center mb-2">Exclusive Deals & Offers</h2>
+        <p class="text-center text-gray-500 text-sm mb-8">Use these promo codes at payment counter or checkout to claim amazing discounts.</p>
+
+        <div class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-dashed border-premium-green p-6 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all duration-300 hover:shadow-md">
+                <div class="flex-1 text-center sm:text-left">
+                    <span class="bg-red-50 text-red-600 font-bold px-2.5 py-1 rounded-md text-xs uppercase tracking-wider inline-block">Flat 20% Off</span>
+                    <h3 class="text-lg font-bold text-gray-800 mt-2">Atlas Premium Launch Discount</h3>
+                    <p class="text-gray-500 text-xs mt-1">Valid on all items across premium mains & burgers.</p>
+                </div>
+                <div class="flex flex-col items-center bg-gray-50 p-3 rounded-xl border w-full sm:w-auto min-w-[140px]">
+                    <span class="text-xs text-gray-400 uppercase font-bold mb-1">Coupon Code</span>
+                    <span id="code-atlas20" class="font-mono font-black text-premium-green text-lg tracking-widest">ATLAS20</span>
+                    <button onclick="copyPromoCode('ATLAS20', this)" class="mt-2 w-full bg-premium-green text-white text-xs px-4 py-1.5 rounded-lg font-bold transition-all hover:bg-opacity-90 active:scale-95">
+                        Copy Code
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-dashed border-gray-200 p-6 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all duration-300 hover:shadow-md">
+                <div class="flex-1 text-center sm:text-left">
+                    <span class="bg-amber-50 text-amber-600 font-bold px-2.5 py-1 rounded-md text-xs uppercase tracking-wider inline-block">Free Appetizer</span>
+                    <h3 class="text-lg font-bold text-gray-800 mt-2">Weekend Special Treat</h3>
+                    <p class="text-gray-500 text-xs mt-1">Get free Truffle Fries on orders above Rs. 1500.</p>
+                </div>
+                <div class="flex flex-col items-center bg-gray-50 p-3 rounded-xl border w-full sm:w-auto min-w-[140px]">
+                    <span class="text-xs text-gray-400 uppercase font-bold mb-1">Coupon Code</span>
+                    <span id="code-freefries" class="font-mono font-black text-gray-700 text-lg tracking-widest">FREEFRIES</span>
+                    <button onclick="copyPromoCode('FREEFRIES', this)" class="mt-2 w-full bg-gray-800 text-white text-xs px-4 py-1.5 rounded-lg font-bold transition-all hover:bg-opacity-90 active:scale-95">
+                        Copy Code
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <h2 class="text-3xl font-serif font-bold text-premium-green mb-8 text-center italic">Common Questions</h2>
-    <div class="space-y-4">
-        <details class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-            <summary class="flex justify-between items-center cursor-pointer font-bold text-premium-green list-none">
-                <span>What are the opening hours?</span>
-                <span class="group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <p class="mt-4 text-gray-500 text-sm">We are open daily from 12:00 PM to 11:00 PM for fine dining and delivery.</p>
-        </details>
-
-        <details class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-            <summary class="flex justify-between items-center cursor-pointer font-bold text-premium-green list-none">
-                <span>Do you offer home delivery?</span>
-                <span class="group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <p class="mt-4 text-gray-500 text-sm">Yes, we deliver across the city. Delivery options are available in our menu.</p>
-        </details>
     </div>
 </div>
 
 <script>
-    function copyPromo() {
-        navigator.clipboard.writeText("ATLAS20");
-        alert("Promo Code Copied! ");
+function copyPromoCode(code, buttonEl) {
+    if (!navigator.clipboard) {
+        // Fallback fallback agar browser support na kare
+        alert("Clipboard not supported. Code: " + code);
+        return;
     }
+    
+    navigator.clipboard.writeText(code).then(() => {
+        const originalText = buttonEl.innerText;
+        buttonEl.innerText = "Copied! ✓";
+        
+        // Dynamic dynamic classes change logic
+        buttonEl.classList.remove('bg-premium-green', 'bg-gray-800');
+        buttonEl.classList.add('bg-amber-500');
+        
+        setTimeout(() => {
+            buttonEl.innerText = originalText;
+            buttonEl.classList.remove('bg-amber-500');
+            if(code === 'ATLAS20') {
+                buttonEl.classList.add('bg-premium-green');
+            } else {
+                buttonEl.classList.add('bg-gray-800');
+            }
+        }, 2000);
+    }).catch(err => {
+        console.error('Could not copy text: ', err);
+    });
+}
 </script>
 {% endblock %}

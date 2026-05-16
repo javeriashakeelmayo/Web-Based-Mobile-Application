@@ -3,9 +3,9 @@
 {% block content %}
 <div class="bg-white min-h-screen pb-20">
     <div class="sticky top-16 bg-white shadow-sm z-40 overflow-x-auto whitespace-nowrap px-4 py-3 no-scrollbar">
-        <a href="{% url 'menu' %}" class="inline-block px-6 py-2 rounded-full border border-premium-green mr-2 text-sm {% if not request.GET.category %}bg-premium-green text-white{% endif %}">All</a>
+        <a href="{% url 'menu' %}" class="inline-block px-6 py-2 rounded-full border border-premium-green mr-2 text-sm {% if not request.GET.category %}bg-premium-green text-white{% else %}text-premium-green{% endif %}">All</a>
         {% for cat in categories %}
-        <a href="?category={{ cat.id }}" class="inline-block px-6 py-2 rounded-full border border-premium-green mr-2 text-sm {% if request.GET.category == cat.id|stringformat:'i' %}bg-premium-green text-white{% endif %}">
+        <a href="?category={{ cat.id }}" class="inline-block px-6 py-2 rounded-full border border-premium-green mr-2 text-sm {% if request.GET.category == cat.id|slugify %}bg-premium-green text-white{% else %}text-premium-green{% endif %}">
             {{ cat.name }}
         </a>
         {% endfor %}
@@ -13,17 +13,19 @@
 
     <div class="p-6 grid grid-cols-1 gap-8">
         {% for item in items %}
-        <div class="flex items-center space-x-4 border-b border-gray-100 pb-6">
+        <div class="flex items-center space-x-4 border-b border-gray-100 pb-6 menu-item-row" data-item-id="{{ item.id }}" data-price="{{ item.price }}">
             <div class="flex-1">
-                <h4 class="text-lg font-bold text-premium-green">{{ item.name }}</h4>
+                <h4 class="text-lg font-bold text-premium-green item-name-display">{{ item.name }}</h4>
                 <p class="text-gray-500 text-xs italic mb-2">{{ item.description }}</p>
-                <span class="font-bold text-premium-green">${{ item.price }}</span>
+                <span class="font-bold text-premium-green item-price-display">${{ item.price }}</span>
             </div>
-            <div class="relative">
+            <div class="relative flex flex-col items-center">
                 <img src="{% if item.image_url %}{{ item.image_url }}{% else %}https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200&h=200&fit=crop{% endif %}"
                 class="w-24 h-24 object-cover rounded-lg"
                 alt="{{ item.name }}">
-                <button onclick="addToCart('{{ item.name }}', '{{ item.price }}')" class="absolute -bottom-2 left-1/2 -translate-x-1/2 btn-premium text-xs px-4 py-1 rounded-full shadow-md font-bold uppercase tracking-wider">Add</button>
+                
+                <div id="btn-container-{{ item.id }}" class="absolute -bottom-2 left-1/2 -translate-x-1/2 custom-cart-controls">
+                </div>
             </div>
         </div>
         {% empty %}
@@ -31,23 +33,112 @@
         {% endfor %}
     </div>
 
-    <div id="cart-summary" class="fixed bottom-6 left-6 right-6 bg-premium-green text-white p-4 flex justify-between items-center rounded-xl shadow-2xl hidden transform translate-y-20 transition-all duration-300">
+    <div id="cart-summary" onclick="toggleOrderSummaryModal(true)" class="fixed bottom-6 left-6 right-6 bg-premium-green text-white p-4 flex justify-between items-center rounded-xl shadow-2xl hidden transform translate-y-20 transition-all duration-300 cursor-pointer z-50 hover:bg-opacity-95">
         <div class="flex items-center space-x-3">
             <div class="bg-premium-gold text-premium-green font-bold px-2 py-1 rounded-md text-xs" id="cart-count">0</div>
             <span class="font-bold tracking-widest text-sm uppercase">View Your Order</span>
         </div>
         <span class="font-bold text-premium-gold" id="cart-total">$0.00</span>
     </div>
+
+    <div id="order-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden transition-opacity duration-300 flex items-end sm:items-center sm:justify-center p-0 sm:p-4">
+        <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl p-6 transform translate-y-full transition-transform duration-300 max-h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-xl font-bold text-premium-green">Your Order</h3>
+                <button onclick="toggleOrderSummaryModal(false)" class="text-gray-400 hover:text-gray-600 font-bold text-xl px-2">&times;</button>
+            </div>
+
+            <div id="modal-items-list" class="overflow-y-auto flex-1 divide-y divide-gray-100 pr-1">
+                </div>
+
+            <div class="border-t pt-4 mt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600 font-medium">Grand Total</span>
+                    <span id="modal-total-price" class="text-2xl font-bold text-premium-green">$0.00</span>
+                </div>
+                <a href="{% url 'checkout' %}" class="block w-full text-center bg-premium-green text-white font-bold py-3 rounded-xl shadow-md uppercase tracking-wider hover:bg-opacity-90 transition-all">
+                    Proceed to Checkout
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    let cart = [];
-    let total = 0;
+    let cart = JSON.parse(localStorage.getItem('restaurant_cart')) || {};
 
-    function addToCart(name, price) {
-        cart.push({name, price: parseFloat(price)});
-        total += parseFloat(price);
+    document.addEventListener("DOMContentLoaded", function() {
+        renderAllButtons();
         updateCartUI();
+    });
+
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function renderAllButtons() {
+    document.querySelectorAll('[id^="btn-container-"]').forEach(container => {
+        const id = container.id.replace('btn-container-', '');
+        const row = container.closest('.menu-item-row');
+        if (!row) return;
+
+        const name = row.querySelector('.item-name-display').innerText.trim();
+        
+        // FIX: Text parakhne ke bajaye data attribute se direct absolute price number uthaein
+        const price = parseFloat(row.getAttribute('data-price')) || 0;
+
+        renderButton(id, name, price);
+    });
+}
+
+    function renderButton(id, name, price) {
+        const container = document.getElementById(`btn-container-${id}`);
+        if (!container) return;
+
+        const sanitizedName = escapeHtml(name);
+
+        if (cart[id] && cart[id].quantity > 0) {
+            container.innerHTML = `
+                <div class="flex items-center bg-white border border-premium-green rounded-full shadow-md px-2 py-1 space-x-3 text-premium-green font-bold text-sm">
+                    <button onclick="changeQuantity('${id}', '${sanitizedName}', ${price}, -1)" class="w-5 h-5 flex items-center justify-center bg-gray-100 rounded-full text-lg font-extrabold">-</button>
+                    <span class="text-xs min-w-[12px] text-center">${cart[id].quantity}</span>
+                    <button onclick="changeQuantity('${id}', '${sanitizedName}', ${price}, 1)" class="w-5 h-5 flex items-center justify-center bg-premium-green text-white rounded-full text-lg font-extrabold">+</button>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <button onclick="changeQuantity('${id}', '${sanitizedName}', ${price}, 1)" class="btn-premium text-xs px-4 py-1 rounded-full shadow-md font-bold uppercase tracking-wider bg-premium-green text-white">Add</button>
+            `;
+        }
+    }
+
+    function changeQuantity(id, name, price, amount) {
+        price = parseFloat(price);
+
+        if (!cart[id]) {
+            cart[id] = { name: name, price: price, quantity: 0 };
+        }
+
+        cart[id].quantity += amount;
+
+        if (cart[id].quantity <= 0) {
+            delete cart[id];
+        }
+
+        localStorage.setItem('restaurant_cart', JSON.stringify(cart));
+        
+        renderButton(id, name, price);
+        updateCartUI();
+        
+        const modal = document.getElementById('order-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+            renderModalItems(); 
+        }
     }
 
     function updateCartUI() {
@@ -55,10 +146,87 @@
         const cartCount = document.getElementById('cart-count');
         const cartTotal = document.getElementById('cart-total');
 
-        if (cart.length > 0) {
-            cartBar.classList.remove('hidden', 'translate-y-20');
-            cartCount.innerText = cart.length;
-            cartTotal.innerText = `$${total.toFixed(2)}`;
+        let totalItemsCount = 0;
+        let totalPrice = 0;
+
+        for (let id in cart) {
+            totalItemsCount += cart[id].quantity;
+            totalPrice += cart[id].price * cart[id].quantity;
+        }
+
+        if (totalItemsCount > 0) {
+            cartBar.classList.remove('hidden');
+            setTimeout(() => cartBar.classList.remove('translate-y-20'), 10);
+            cartCount.innerText = totalItemsCount;
+            cartTotal.innerText = `$${totalPrice.toFixed(2)}`;
+        } else {
+            cartBar.classList.add('translate-y-20');
+            setTimeout(() => cartBar.classList.add('hidden'), 300);
+            toggleOrderSummaryModal(false); 
+        }
+    }
+
+    // Modal toggles and list items generation logic 
+    function toggleOrderSummaryModal(show) {
+        const modal = document.getElementById('order-modal');
+        const modalBody = modal.querySelector('div');
+
+        if (show) {
+            renderModalItems();
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalBody.classList.remove('translate-y-full');
+            }, 10);
+        } else {
+            modalBody.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    }
+
+    function renderModalItems() {
+        const itemsListContainer = document.getElementById('modal-items-list');
+        const modalTotalPrice = document.getElementById('modal-total-price');
+        
+        if (!itemsListContainer) return;
+        itemsListContainer.innerHTML = '';
+        
+        let totalPrice = 0;
+        let hasItems = false;
+        let htmlContent = '';
+
+        for (let id in cart) {
+            hasItems = true;
+            let item = cart[id];
+            let itemTotal = item.price * item.quantity;
+            totalPrice += itemTotal;
+
+            const safeName = escapeHtml(item.name);
+
+            htmlContent += `
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex-1 pr-2">
+                        <h5 class="font-bold text-gray-800 text-sm">${safeName}</h5>
+                        <p class="text-xs text-premium-green font-semibold mt-0.5">$${parseFloat(item.price).toFixed(2)} each</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="flex items-center border border-premium-green rounded-full px-2 py-0.5 space-x-2 text-premium-green font-bold text-xs bg-white">
+                            <button onclick="changeQuantity('${id}', '${safeName}', ${item.price}, -1)" class="w-4 h-4 flex items-center justify-center bg-gray-100 rounded-full font-bold text-sm">-</button>
+                            <span class="min-w-[10px] text-center">${item.quantity}</span>
+                            <button onclick="changeQuantity('${id}', '${safeName}', ${item.price}, 1)" class="w-4 h-4 flex items-center justify-center bg-premium-green text-white rounded-full font-bold text-sm">+</button>
+                        </div>
+                        <span class="font-bold text-gray-700 text-sm min-w-[55px] text-right">$${itemTotal.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        itemsListContainer.innerHTML = htmlContent;
+        modalTotalPrice.innerText = `$${totalPrice.toFixed(2)}`;
+
+        if (!hasItems) {
+            toggleOrderSummaryModal(false);
         }
     }
 </script>

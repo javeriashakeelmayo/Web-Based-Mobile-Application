@@ -21,7 +21,7 @@ class Booking(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
     date = models.DateField()
-    time_slot = models.TimeField()
+    time_slot = models.CharField(max_length=50)
     guests = models.IntegerField()
     reference_id = models.CharField(max_length=10, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -11,4 +11,7 @@ urlpatterns = [
     path('faqs/', views.faq_view, name='faqs'),
     path('manifest.json', TemplateView.as_view(template_name='manifest.json', content_type='application/json')),
         path('sw.js', TemplateView.as_view(template_name='sw.js', content_type='application/javascript')),
+    path('cart/update/', views.update_cart, name='update_cart'),
+    path('cart/status/', views.get_cart_status, name='get_cart_status'),
+    path('checkout/', views.checkout, name='checkout'), 
 ]

@@ -2,48 +2,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlas Dining | Premium Fast Food</title>
+    
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-       
         .bg-premium-green { background-color: #1A3C34; } 
         .text-premium-gold { color: #C5A059; }
+        .border-premium-green { border-color: #1A3C34; }
         .btn-premium { background-color: #C5A059; color: #1A3C34; }
+        /* Hide scrollbar for category tabs */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/static/sw.js')
-                .then(reg => console.log('App Mode Active!'))
-                .catch(err => console.log('PWA registration failed', err));
-        });
-    }
-</script>
-<body class="bg-gray-50 font-sans">
-    <nav class="bg-premium-green p-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
-    <a href="{% url 'home' %}" class="inline-block">
-        <h1 class="text-xl font-bold tracking-widest text-premium-gold uppercase">
-            ATLAS DINING
-        </h1>
-    </a>
+<body class="bg-gray-50 font-sans text-gray-800">
 
-    <div class="space-x-4">
-        <a href="{% url 'menu' %}" class="text-white text-sm font-bold hover:text-premium-gold transition">Menu</a>
-        <a href="{% url 'booking' %}" class="text-white text-sm font-bold hover:text-premium-gold transition">Book</a>
-    </div>
-</nav>
+    <header class="bg-premium-green sticky top-0 z-50 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="inline-block">
+                <h1 class="text-xl font-bold tracking-widest text-premium-gold uppercase">
+                    ATLAS DINING
+                </h1>
+            </a>
 
-    {% block content %}
-    {% endblock %}
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="{% url 'home' %}" class="text-white hover:text-premium-gold text-sm font-bold transition">Home</a>
+                <a href="{% url 'menu' %}" class="text-white hover:text-premium-gold text-sm font-bold transition">Menu</a>
+                <a href="{% url 'deals' %}" class="text-white hover:text-premium-gold text-sm font-bold transition">Deals</a>
+                <a href="{% url 'booking' %}" class="text-white hover:text-premium-gold text-sm font-bold transition">Book a Table</a>
+                <a href="{% url 'faqs' %}" class="text-white hover:text-premium-gold text-sm font-bold transition">FAQs</a>
+            </nav>
+        </div>
+    </header>
 
-    <footer class="bg-gray-100 p-8 text-center text-gray-500 text-sm">
-        &copy; 2026 Atlas Dining. All Rights Reserved.
+    <main class="min-h-[70vh]">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-premium-green text-white border-t border-gray-800 pt-12 pb-24 md:pb-12 mt-20">
+        <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold text-premium-gold tracking-wider mb-4">ATLAS DINING</h3>
+                <p class="text-gray-300 text-sm leading-relaxed mb-2">
+                    Plot 14-C, Stadium Commercial Lane 3, Block A, Dubai Chowk Area, Bahawalpur, Pakistan.
+                </p>
+                <p class="text-xs text-gray-400">Next to Gourmet Bakers.</p>
+            </div>
+            <div>
+                <h4 class="text-md font-semibold text-premium-gold uppercase tracking-wider mb-4">Contact & Timings</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><strong>Phone:</strong> +92 62 1234567 / +92 300 7654321</li>
+                    <li><strong>Email:</strong> info@atlasdining.pk</li>
+                    <li><strong>Timings:</strong> 12:00 PM - 01:00 AM (Daily)</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-md font-semibold text-premium-gold uppercase tracking-wider mb-4">Follow Our Journey</h4>
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center hover:bg-premium-gold hover:text-premium-green transition-all"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center hover:bg-premium-gold hover:text-premium-green transition-all"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center hover:bg-premium-gold hover:text-premium-green transition-all"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-900 mt-10 pt-6 text-center text-xs text-gray-400">
+            &copy; 2026 Atlas Dining. All Rights Reserved. Crafted with Premium Quality.
+        </div>
     </footer>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around items-center py-2.5 md:hidden z-40 shadow-2xl">
+        <a href="{% url 'home' %}" class="flex flex-col items-center text-gray-500 hover:text-premium-green transition">
+            <span class="text-lg mb-0.5">🏠</span><span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+        </a>
+        <a href="{% url 'menu' %}" class="flex flex-col items-center text-gray-500 hover:text-premium-green transition">
+            <span class="text-lg mb-0.5">🍔</span><span class="text-[10px] font-bold uppercase tracking-wider">Menu</span>
+        </a>
+        <a href="{% url 'deals' %}" class="flex flex-col items-center text-gray-500 hover:text-premium-green transition">
+            <span class="text-lg mb-0.5">🏷️</span><span class="text-[10px] font-bold uppercase tracking-wider">Deals</span>
+        </a>
+        <a href="{% url 'booking' %}" class="flex flex-col items-center text-gray-500 hover:text-premium-green transition">
+            <span class="text-lg mb-0.5">📅</span><span class="text-[10px] font-bold uppercase tracking-wider">Book</span>
+        </a>
+    </div>
+
+    <div id="discount-popup" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative transform scale-90 transition-transform duration-300">
+            <button onclick="closeLeadPopup()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl font-bold">&times;</button>
+            
+            <div class="text-center mb-4">
+                <span class="text-2xl">🎁</span>
+                <h3 class="text-xl font-black text-premium-green mt-1">Get 20% Off Your First Order</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Enter your details to receive code **ATLAS20** directly on WhatsApp.</p>
+            </div>
+
+            <form id="lead-capture-form" class="space-y-3">
+                <div>
+                    <input type="text" id="lead-name" required class="w-full border rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-premium-green" placeholder="Your Full Name">
+                </div>
+                <div>
+                    <input type="email" id="lead-email" required class="w-full border rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-premium-green" placeholder="Your Email Address">
+                </div>
+                <div>
+                    <input type="tel" id="lead-whatsapp" required class="w-full border rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-premium-green" placeholder="WhatsApp Number (e.g., 03001234567)">
+                </div>
+                <div>
+                    <select id="lead-interest" class="w-full border rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-premium-green bg-white text-gray-600">
+                        <option value="Fine Dining">Interested in Fine Dining</option>
+                        <option value="Fast Food / Burgers">Interested in Fast Food & Burgers</option>
+                        <option value="Takeaway / Delivery">Interested in Home Delivery</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-premium-green text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider shadow-md hover:bg-opacity-95 transition-all">
+                    Claim My 20% Discount
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(reg => console.log('App Mode Active!'))
+                    .catch(err => console.log('PWA registration failed', err));
+            });
+        }
+
+        // Lead Popup Mechanics
+        document.addEventListener("DOMContentLoaded", function() {
+            if (!localStorage.getItem('lead_captured')) {
+                setTimeout(() => {
+                    const popup = document.getElementById('discount-popup');
+                    const body = popup.querySelector('div');
+                    popup.classList.remove('hidden');
+                    setTimeout(() => {
+                        popup.classList.add('opacity-100');
+                        body.classList.remove('scale-90');
+                        body.classList.add('scale-100');
+                    }, 50);
+                }, 3000);
+            }
+        });
+
+        function closeLeadPopup() {
+            const popup = document.getElementById('discount-popup');
+            popup.classList.remove('opacity-100');
+            setTimeout(() => popup.classList.add('hidden'), 300);
+        }
+
+        document.getElementById('lead-capture-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            localStorage.setItem('lead_captured', 'true');
+            alert("🎉 Thank you! Discount validation complete. Code ATLAS20 is activated for your details.");
+            closeLeadPopup();
+        });
+    </script>
 </body>
 </html>

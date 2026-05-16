@@ -7,24 +7,35 @@
         <p class="text-gray-500 italic mt-2">Secure your spot at Atlas Dining</p>
     </div>
 
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-xs font-bold flex items-center space-x-2 animate-bounce">
+            <span>⚠️</span>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <form method="POST" action="{% url 'booking' %}" class="space-y-6">
         {% csrf_token %}
         
         <div>
             <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Full Name</label>
             <input type="text" name="name" required placeholder="Enter your name" 
-                   class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+                   class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition text-sm">
         </div>
 
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Phone Number</label>
                 <input type="tel" name="phone" required placeholder="03xx-xxxxxxx" 
-                       class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+                       class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition text-sm">
             </div>
             <div>
                 <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Guests</label>
-                <select name="guests" class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+                <select name="guests" class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition text-sm bg-white text-gray-700">
                     <option value="1">1 Person</option>
                     <option value="2" selected>2 People</option>
                     <option value="4">4 People</option>
@@ -36,19 +47,49 @@
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Date</label>
-                <input type="date" name="date" required 
-                       class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+                <input type="date" name="date" id="booking-date" required 
+                       class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition text-sm">
             </div>
             <div>
-                <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Time</label>
-                <input type="time" name="time" required 
-                       class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition">
+                <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Time Slot</label>
+                <select name="time" required class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition text-sm bg-white text-gray-700">
+                    <option value="12:00 PM - 02:00 PM" {% if "12:00 PM - 02:00 PM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>12:00 PM - 02:00 PM {% if "12:00 PM - 02:00 PM" in full_slots %}(Full){% endif %}
+                    </option>
+                    <option value="02:00 PM - 04:00 PM" {% if "02:00 PM - 04:00 PM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>02:00 PM - 04:00 PM {% if "02:00 PM - 04:00 PM" in full_slots %}(Full){% endif %}
+                    </option>
+                    <option value="06:00 PM - 08:00 PM" {% if "06:00 PM - 08:00 PM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>06:00 PM - 08:00 PM {% if "06:00 PM - 08:00 PM" in full_slots %}(Full){% endif %}
+                    </option>
+                    <option value="08:00 PM - 10:00 PM" selected {% if "08:00 PM - 10:00 PM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>08:00 PM - 10:00 PM {% if "08:00 PM - 10:00 PM" in full_slots %}(Full){% endif %}
+                    </option>
+                    <option value="10:00 PM - 12:00 AM" {% if "10:00 PM - 12:00 AM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>10:00 PM - 12:00 AM {% if "10:00 PM - 12:00 AM" in full_slots %}(Full){% endif %}
+                    </option>
+                </select>
             </div>
         </div>
 
-        <button type="submit" class="w-full btn-premium py-4 rounded-xl font-bold tracking-widest text-sm shadow-lg transform active:scale-95 transition">
+        <button type="submit" class="w-full btn-premium py-4 rounded-xl font-bold tracking-widest text-sm shadow-lg transform active:scale-95 transition mt-4">
             CONFIRM RESERVATION
         </button>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        
+        const minDateString = `${year}-${month}-${day}`;
+        
+        // Input core attribute selector par min date inject karein
+        const dateInput = document.getElementById('booking-date');
+        if (dateInput) {
+            dateInput.setAttribute('min', minDateString);
+            // Default selected value ko aaj ki date par auto-set karne ke liye:
+            dateInput.value = minDateString;
+        }
+    });
+</script>
 {% endblock %}

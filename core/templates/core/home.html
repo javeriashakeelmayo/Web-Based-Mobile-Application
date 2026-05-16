@@ -37,7 +37,7 @@
                 <img src="{% if item.image_url %}{{ item.image_url }}{% else %}https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800&auto=format&fit=crop{% endif %}" 
                 class="w-full h-64 object-cover transition duration-500 group-hover:scale-110" 
                 alt="{{ item.name }}">
-                <div class="absolute top-4 right-4 bg-white px-3 py-1 text-sm font-bold shadow-lg">${{ item.price }}</div>
+                <div class="absolute top-4 right-4 bg-white px-3 py-1 text-sm font-bold shadow-lg text-premium-green">Rs. {{ item.price }}</div>
             </div>
             <h4 class="text-xl font-bold text-premium-green mb-1">{{ item.name }}</h4>
             <p class="text-gray-600 text-sm line-clamp-2 italic">{{ item.description }}</p>
@@ -48,27 +48,110 @@
     </div>
 </div>
 
+<section class="max-w-4xl mx-auto px-6 my-16">
+    <div class="text-center mb-10">
+        <span class="text-xs font-bold text-premium-gold uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full">Reviews</span>
+        <h2 class="text-3xl font-serif font-black text-premium-green mt-2">What Our Diners Say</h2>
+        <p class="text-sm text-gray-400 mt-1">Real feedback from Atlas Dining premium guests</p>
+    </div>
 
-<div class="py-16 px-6 max-w-3xl mx-auto bg-white">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <div>
+                <div class="text-amber-400 text-sm mb-3">★★★★★</div>
+                <p class="text-gray-600 text-xs italic leading-relaxed">"The Atlas Signature Wagyu Burger is out of this world! Melted aged cheddar combined with their secret sauce makes it the best burger in Bahawalpur, hands down."</p>
+            </div>
+            <div class="mt-4 border-t pt-3 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-premium-green text-white flex items-center justify-center font-bold text-xs uppercase">HM</div>
+                <div>
+                    <h5 class="text-xs font-bold text-gray-800">Hamza Malik</h5>
+                    <span class="text-[10px] text-gray-400">Local Guide</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <div>
+                <div class="text-amber-400 text-sm mb-3">★★★★★</div>
+                <p class="text-gray-600 text-xs italic leading-relaxed">"Booked a table for our family anniversary. The reservation system was seamless, slot timings were managed perfectly, and the Truffle Fries were phenomenal!"</p>
+            </div>
+            <div class="mt-4 border-t pt-3 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-premium-green text-white flex items-center justify-center font-bold text-xs uppercase">SA</div>
+                <div>
+                    <h5 class="text-xs font-bold text-gray-800">Sana Ahmed</h5>
+                    <span class="text-[10px] text-gray-400">Verified Diner</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <div>
+                <div class="text-amber-400 text-sm mb-3">★★★★★</div>
+                <p class="text-gray-600 text-xs italic leading-relaxed">"Incredible premium taste with lighting fast free home delivery around Dubai Chowk. Highly recommend their Honey-Glazed Sriracha Wings."</p>
+            </div>
+            <div class="mt-4 border-t pt-3 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-premium-green text-white flex items-center justify-center font-bold text-xs uppercase">ZK</div>
+                <div>
+                    <h5 class="text-xs font-bold text-gray-800">Zain Khan</h5>
+                    <span class="text-[10px] text-gray-400">Food Blogger</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="py-16 px-6 max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 mb-20">
     <h3 class="text-3xl font-serif text-center text-premium-green font-bold mb-10 italic">Common Questions</h3>
-    <div class="space-y-4">
-        <details class="group border-b border-gray-100 pb-4 cursor-pointer">
-            <summary class="flex justify-between items-center font-bold text-premium-green list-none">
-                <span>What are your opening hours?</span>
-                <span class="text-premium-gold transition group-open:rotate-180">▼</span>
-            </summary>
-            <p class="mt-4 text-gray-500 text-sm italic">We serve from 12:00 PM to 11:00 PM daily. </p>
-        </details>
+    <div class="space-y-4 divide-y divide-gray-100">
+        
+        <div class="pt-4">
+            <details class="group cursor-pointer">
+                <summary class="flex justify-between items-center font-bold text-premium-green list-none">
+                    <span>What are your opening hours?</span>
+                    <span class="text-premium-gold transition group-open:rotate-180">▼</span>
+                </summary>
+                <p class="mt-4 text-gray-500 text-xs leading-relaxed pl-1">
+                    We serve daily from <strong>12:00 PM to 01:00 AM</strong>. Last dine-in and delivery orders are taken 30 minutes before closing.
+                </p>
+            </details>
+        </div>
 
-        <details class="group border-b border-gray-100 pb-4 cursor-pointer">
-            <summary class="flex justify-between items-center font-bold text-premium-green list-none">
-                <span>Where are you located?</span>
-                <span class="text-premium-gold transition group-open:rotate-180">▼</span>
-            </summary>
-            <p class="mt-4 text-gray-500 text-sm italic">Find us at the heart of the city's food district. </p>
-        </details>
+        <div class="pt-4">
+            <details class="group cursor-pointer">
+                <summary class="flex justify-between items-center font-bold text-premium-green list-none">
+                    <span>Where are you located?</span>
+                    <span class="text-premium-gold transition group-open:rotate-180">▼</span>
+                </summary>
+                <p class="mt-4 text-gray-500 text-xs leading-relaxed pl-1">
+                    Find us at <strong>Plot 14-C, Stadium Commercial Lane 3, Block A, Dubai Chowk Area, Bahawalpur, Pakistan</strong> (Next to Gourmet Bakers).
+                </p>
+            </details>
+        </div>
+
+        <div class="pt-4">
+            <details class="group cursor-pointer">
+                <summary class="flex justify-between items-center font-bold text-premium-green list-none">
+                    <span>Is the food served 100% Halal?</span>
+                    <span class="text-premium-gold transition group-open:rotate-180">▼</span>
+                </summary>
+                <p class="mt-4 text-gray-500 text-xs leading-relaxed pl-1">
+                    Yes, absolutely. All our premium beef patties, raw chicken, and condiments are sourced strictly from ISO and Halal-certified corporate suppliers.
+                </p>
+            </details>
+        </div>
+
+        <div class="pt-4">
+            <details class="group cursor-pointer">
+                <summary class="flex justify-between items-center font-bold text-premium-green list-none">
+                    <span>What are your delivery areas and charges?</span>
+                    <span class="text-premium-gold transition group-open:rotate-180">▼</span>
+                </summary>
+                <p class="mt-4 text-gray-500 text-xs leading-relaxed pl-1">
+                    Home delivery is entirely <strong>FREE within a 5km radius</strong> of Dubai Chowk. For outer destinations up to 12km, a flat Rs. 150 rider fuel charge applies.
+                </p>
+            </details>
+        </div>
+        
     </div>
 </div>
 {% endblock %}
-
-
