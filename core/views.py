@@ -39,19 +39,17 @@ def book_table(request):
         )
         return render(request, 'core/booking_success.html')
 
-    # GET REQUEST: Jab user pehli baar page khole
-    # Hum misal ke taur par dekh rahe hain ke har slot ki kitni bookings hain aaj ki date mein
+
     from datetime import date
     today_str = date.today().strftime('%Y-%m-%d')
     
-    # Database se un slots ki list nikalna jahan bookings 5 ya us se zyada ho chuki hain
-    # (Aap 5 ki jagah koi bhi limit rakh sakti hain)
+
     full_slots_query = Booking.objects.filter(date=date.today())\
                                       .values('time_slot')\
                                       .annotate(total=Count('id'))\
                                       .filter(total__gte=5)
     
-    # Sirf slot ke naamon ki ek clean list bana lein
+
     full_slots = [slot['time_slot'] for slot in full_slots_query]
 
     return render(request, 'core/booking.html', {'full_slots': full_slots})

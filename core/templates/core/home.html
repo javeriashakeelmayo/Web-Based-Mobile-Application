@@ -37,7 +37,7 @@
                 <img src="{% if item.image_url %}{{ item.image_url }}{% else %}https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800&auto=format&fit=crop{% endif %}" 
                 class="w-full h-64 object-cover transition duration-500 group-hover:scale-110" 
                 alt="{{ item.name }}">
-                <div class="absolute top-4 right-4 bg-white px-3 py-1 text-sm font-bold shadow-lg text-premium-green">Rs. {{ item.price }}</div>
+                <div class="absolute top-4 right-4 bg-white px-3 py-1 text-sm font-bold shadow-lg text-premium-green">${{ item.price|floatformat:2 }}</div>
             </div>
             <h4 class="text-xl font-bold text-premium-green mb-1">{{ item.name }}</h4>
             <p class="text-gray-600 text-sm line-clamp-2 italic">{{ item.description }}</p>
