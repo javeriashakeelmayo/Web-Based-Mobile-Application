@@ -26,7 +26,6 @@ def menu(request):
     })
 def book_table(request):
     if request.method == "POST":
-        # ... aapka purana booking creation ka code yahan rahega ...
         name_val = request.POST.get('name')
         phone_val = request.POST.get('phone')
         date_val = request.POST.get('date')
@@ -39,17 +38,28 @@ def book_table(request):
         )
         return render(request, 'core/booking_success.html')
 
-
+    # --- GET Request Logic (Dynamic Date Handling) ---
     from datetime import date
-    today_str = date.today().strftime('%Y-%m-%d')
     
+    # 1. URL se check karein agar user ne koi date select ki hai (?date=YYYY-MM-DD)
+    # Agar nahi ki, to default aaj ki tareekh uthayein
+    target_date_str = request.GET.get('date')
+    if target_date_str:
+        try:
+            # String date ko standard Python date object mein convert karein
+            from datetime import datetime
+            target_date = datetime.strptime(target_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            target_date = date.today()
+    else:
+        target_date = date.today()
 
-    full_slots_query = Booking.objects.filter(date=date.today())\
+    # 2. Ab specific selected target_date ke booked slots database se filter karein
+    full_slots_query = Booking.objects.filter(date=target_date)\
                                       .values('time_slot')\
                                       .annotate(total=Count('id'))\
-                                      .filter(total__gte=5)
+                                      .filter(total__gte=5) # 5 ya 5 se zyada bookings par full
     
-
     full_slots = [slot['time_slot'] for slot in full_slots_query]
 
     return render(request, 'core/booking.html', {'full_slots': full_slots})

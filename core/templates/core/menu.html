@@ -49,7 +49,7 @@
             </div>
 
             <div id="modal-items-list" class="overflow-y-auto flex-1 divide-y divide-gray-100 pr-1">
-                </div>
+            </div>
 
             <div class="border-t pt-4 mt-4">
                 <div class="flex justify-between items-center mb-4">
@@ -82,19 +82,17 @@
     }
 
     function renderAllButtons() {
-    document.querySelectorAll('[id^="btn-container-"]').forEach(container => {
-        const id = container.id.replace('btn-container-', '');
-        const row = container.closest('.menu-item-row');
-        if (!row) return;
+        document.querySelectorAll('[id^="btn-container-"]').forEach(container => {
+            const id = container.id.replace('btn-container-', '');
+            const row = container.closest('.menu-item-row');
+            if (!row) return;
 
-        const name = row.querySelector('.item-name-display').innerText.trim();
-        
-        // FIX: Text parakhne ke bajaye data attribute se direct absolute price number uthaein
-        const price = parseFloat(row.getAttribute('data-price')) || 0;
+            const name = row.querySelector('.item-name-display').innerText.trim();
+            const price = parseFloat(row.getAttribute('data-price')) || 0;
 
-        renderButton(id, name, price);
-    });
-}
+            renderButton(id, name, price);
+        });
+    }
 
     function renderButton(id, name, price) {
         const container = document.getElementById(`btn-container-${id}`);
@@ -155,18 +153,25 @@
         }
 
         if (totalItemsCount > 0) {
+            // Cart summary ko screen par show karne ke liye classes handle karein
             cartBar.classList.remove('hidden');
-            setTimeout(() => cartBar.classList.remove('translate-y-20'), 10);
+            setTimeout(() => {
+                cartBar.classList.remove('translate-y-20');
+            }, 10);
+            
             cartCount.innerText = totalItemsCount;
             cartTotal.innerText = `$${totalPrice.toFixed(2)}`;
         } else {
+            // Agar items zero hain to smoothly hide kardein
+            cartBar.add ? cartBar.classList.add('translate-y-20') : cartBar.classList.add('translate-y-20');
             cartBar.classList.add('translate-y-20');
-            setTimeout(() => cartBar.classList.add('hidden'), 300);
+            setTimeout(() => {
+                cartBar.classList.add('hidden');
+            }, 300);
             toggleOrderSummaryModal(false); 
         }
     }
 
-    // Modal toggles and list items generation logic 
     function toggleOrderSummaryModal(show) {
         const modal = document.getElementById('order-modal');
         const modalBody = modal.querySelector('div');

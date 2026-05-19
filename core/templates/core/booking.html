@@ -75,21 +75,33 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        
         const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
-        
         const minDateString = `${year}-${month}-${day}`;
         
-        // Input core attribute selector par min date inject karein
         const dateInput = document.getElementById('booking-date');
         if (dateInput) {
+            // Past dates ko disable karne ke liye min attribute set karein
             dateInput.setAttribute('min', minDateString);
-            // Default selected value ko aaj ki date par auto-set karne ke liye:
-            dateInput.value = minDateString;
+            
+            // Check karein agar URL mein pehle se koi date selected hai
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedDate = urlParams.get('date');
+            
+            if (selectedDate) {
+                dateInput.value = selectedDate;
+            } else {
+                dateInput.value = minDateString;
+            }
+
+            // Jab user date change kare, to naye date parameter ke saath page auto-reload ho
+            dateInput.addEventListener('change', function() {
+                window.location.href = `?date=${this.value}`;
+            });
         }
     });
 </script>
+
 {% endblock %}

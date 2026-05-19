@@ -9,7 +9,7 @@
             <h3 class="text-md font-bold text-gray-800 uppercase tracking-wider border-b pb-3 mb-4">Order Review</h3>
             
             <div id="checkout-items-list" class="divide-y divide-gray-100 max-h-[40vh] overflow-y-auto pr-1">
-                </div>
+            </div>
 
             <div class="border-t pt-4 mt-4 space-y-2">
                 <div class="flex justify-between text-sm text-gray-500">
@@ -22,7 +22,7 @@
                 </div>
                 <div class="flex justify-between text-sm text-gray-500">
                     <span>Delivery Fee</span>
-                    <span class="text-premium-green font-medium">FREE</span>
+                    <span id="checkout-delivery-fee" class="text-premium-green font-medium">FREE</span>
                 </div>
                 <div class="flex justify-between items-center border-t pt-3 mt-2">
                     <span class="font-bold text-gray-800">Total Bill</span>
@@ -32,19 +32,31 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm p-6">
-            <h3 class="text-md font-bold text-gray-800 uppercase tracking-wider border-b pb-3 mb-4">Delivery Details</h3>
+            <h3 class="text-md font-bold text-gray-800 uppercase tracking-wider border-b pb-3 mb-4">Customer Details</h3>
             <form id="checkout-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Full Name</label>
-                    <input type="text" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-premium-green" placeholder="Enter your name">
+                    <input type="text" id="cust-name" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-premium-green" placeholder="Enter your name">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Phone Number</label>
-                    <input type="tel" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-premium-green" placeholder="e.g. 03001234567">
+                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Email Address</label>
+                    <input type="email" id="cust-email" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-premium-green" placeholder="username@example.com">
                 </div>
                 <div>
+                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Phone / WhatsApp Number</label>
+                    <input type="tel" id="cust-phone" required class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-premium-green" placeholder="e.g. 03001234567">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Dining Interest</label>
+                    <select id="dining-interest" onchange="handleDiningChange()" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:border-premium-green">
+                        <option value="delivery">Home Delivery</option>
+                        <option value="dine_in">Dine-In (At Restaurant)</option>
+                        <option value="takeaway">Takeaway</option>
+                    </select>
+                </div>
+                <div id="address-container">
                     <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Delivery Address</label>
-                    <textarea required rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-premium-green resize-none" placeholder="House#, Street, Area Name..."></textarea>
+                    <textarea id="cust-address" required rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-premium-green resize-none" placeholder="House#, Street, Area Name..."></textarea>
                 </div>
 
                 <div class="border-t pt-4 mt-4">
@@ -67,14 +79,12 @@
 </div>
 
 <script>
-    // LocalStorage engine key context parsing
     let cart = JSON.parse(localStorage.getItem('restaurant_cart')) || {};
     let discountPercentage = 0;
 
     document.addEventListener("DOMContentLoaded", function() {
         renderCheckoutOrder();
 
-        // Handle Form Submission Action
         document.getElementById('checkout-form').addEventListener('submit', function(e) {
             e.preventDefault();
             if (Object.keys(cart).length === 0) {
@@ -84,13 +94,38 @@
             
             alert("🎉 Awesome! Aapka order receive ho gaya hai. Hum jald hi aap se raabta karenge.");
             
-            // Order placement complete hone par storage clear out settings
             localStorage.removeItem('restaurant_cart');
             window.location.href = "{% url 'home' %}";
         });
     });
 
-    // FIX: 'def' typo hata kar sahi JavaScript native 'function' keyword reset kiya hai
+    function handleDiningChange() {
+    const interest = document.getElementById('dining-interest').value;
+    const addressContainer = document.getElementById('address-container');
+    const addressInput = document.getElementById('cust-address');
+    const deliveryFeeEl = document.getElementById('checkout-delivery-fee');
+    const submitBtn = document.querySelector('#checkout-form button[type="submit"]');
+
+    if (interest === 'delivery') {
+        addressContainer.classList.remove('hidden');
+        addressInput.setAttribute('required', 'required');
+        deliveryFeeEl.innerText = "FREE";
+        submitBtn.innerText = "Place Order (Cash on Delivery)";
+    } else if (interest === 'dine_in') {
+        addressContainer.classList.add('hidden');
+        addressInput.removeAttribute('required');
+        addressInput.value = ''; 
+        deliveryFeeEl.innerText = "N/A";
+        submitBtn.innerText = "Confirm Dine-In Booking";
+    } else {
+        addressContainer.classList.add('hidden');
+        addressInput.removeAttribute('required');
+        addressInput.value = ''; 
+        deliveryFeeEl.innerText = "N/A";
+        submitBtn.innerText = "Confirm Takeaway Order";
+    }
+}
+
     function calculateSubtotal() {
         let sub = 0;
         for (let id in cart) {
@@ -111,7 +146,6 @@
         
         let subtotal = calculateSubtotal();
 
-        // Safe Fallback: Agar storage khali hai to page load hotay hi loop crash karne ke bajaye user ko menu page par redirect karega
         if (Object.keys(cart).length === 0) {
             listContainer.innerHTML = '<p class="text-center py-6 text-gray-400 text-sm">Your cart is empty.</p>';
             setTimeout(function() {
@@ -128,14 +162,13 @@
                 <div class="flex justify-between items-center py-3.5">
                     <div>
                         <h5 class="font-bold text-gray-800 text-sm">${item.name}</h5>
-                        <p class="text-xs text-gray-400 mt-0.5">$${parseFloat(item.price).toFixed(2)} &times; ${item.quantity}</p>
+                        <p class="text-xs text-gray-400 mt-0.5">$${item.price} &times; ${item.quantity}</p>
                     </div>
                     <span class="font-bold text-gray-700 text-sm">$${itemTotal.toFixed(2)}</span>
                 </div>
             `;
         }
 
-        // Apply dynamic discount math algorithms
         let discountAmount = (subtotal * discountPercentage) / 100;
         let finalGrandTotal = subtotal - discountAmount;
 
