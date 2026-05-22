@@ -1,26 +1,81 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="min-h-[80vh] flex items-center justify-center bg-gray-50 px-4">
+<div class="min-h-[80vh] flex items-center justify-center bg-gray-50 px-4 py-8">
     <div class="bg-white max-w-md w-full rounded-2xl shadow-xl p-8 text-center border-t-8 border-premium-green">
-        <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🎉</div>
+        
+        <div class="success-animation-wrapper mb-4">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+        </div>
+
         <h2 class="text-2xl font-black text-premium-green">Reservation Confirmed!</h2>
         <p class="text-gray-500 text-sm mt-1">We have saved your premium spot at Atlas Dining.</p>
 
         <div class="bg-gray-50 rounded-xl p-4 my-6 border border-dashed border-gray-200">
             <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">Your Booking Reference</span>
-            <div class="text-2xl font-mono font-black text-gray-800 mt-1">AD-48291</div>
+            <div class="text-2xl font-mono font-black text-gray-800 mt-1">
+                {{ booking.reference_id|default:"GEN-ERROR" }}
+            </div>
         </div>
 
         <div class="text-left bg-gray-50 p-4 rounded-xl text-xs space-y-2 text-gray-600 mb-6">
-            <div><strong>Guest Name:</strong> {{ booking.name|default:"Valued Customer" }}</div>
-            <div><strong>Total Guests:</strong> {{ booking.guests|default:"2" }} Persons</div>
-            <div><strong>Time Slot:</strong> {{ booking.time_slot|default:"08:00 PM" }}</div>
+            <div><strong>Guest Name:</strong> {{ booking.name }}</div>
+            <div><strong>Total Guests:</strong> {{ booking.guests }} Persons</div>
+            <div><strong>Time Slot:</strong> {{ booking.time_slot }}</div>
+            <div><strong>Date:</strong> {{ booking.date }}</div>
         </div>
 
-        <a href="{% url 'menu' %}" class="block bg-premium-green text-white font-bold py-3 rounded-xl uppercase tracking-wider text-sm shadow-md hover:bg-opacity-95">
+        <div class="mb-6">
+            <a href="https://wa.me/923001234567?text=Hi%20Atlas%20Dining,%20I%20want%20to%20confirm/modify%20my%20booking%20with%20Reference%20ID:%20{{ booking.reference_id }}" 
+               target="_blank" 
+               class="flex items-center justify-center gap-2 w-full bg-[#25D366] text-white font-bold py-3 rounded-xl uppercase tracking-wider text-sm shadow-md hover:bg-opacity-95 transition-all" style="text-decoration: none;">
+                Contact via WhatsApp
+            </a>
+        </div>
+
+        <a href="{% url 'menu' %}" class="block bg-premium-green text-white font-bold py-3 rounded-xl uppercase tracking-wider text-sm shadow-md hover:bg-opacity-95" style="text-decoration: none;">
             Explore Menu Items
         </a>
     </div>
 </div>
+
+<style>
+.success-animation-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.checkmark {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 3;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #15803d;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s forwards;
+}
+.checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 3;
+    stroke-miterlimit: 10;
+    stroke: #15803d;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+.checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+@keyframes stroke { 100% { stroke-dashoffset: 0; } }
+@keyframes fill { 100% { box-shadow: inset 0px 0px 0px 40px #15803d; } }
+@keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+</style>
 {% endblock %}

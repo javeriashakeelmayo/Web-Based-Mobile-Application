@@ -53,16 +53,11 @@
             <div>
                 <label class="block text-xs font-bold text-premium-green mb-2 tracking-widest uppercase">Time Slot</label>
                 <select name="time" required class="w-full p-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-premium-gold outline-none transition text-sm bg-white text-gray-700">
-                    <option value="12:00 PM - 02:00 PM" {% if "12:00 PM - 02:00 PM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>12:00 PM - 02:00 PM {% if "12:00 PM - 02:00 PM" in full_slots %}(Full){% endif %}
-                    </option>
-                    <option value="02:00 PM - 04:00 PM" {% if "02:00 PM - 04:00 PM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>02:00 PM - 04:00 PM {% if "02:00 PM - 04:00 PM" in full_slots %}(Full){% endif %}
-                    </option>
-                    <option value="06:00 PM - 08:00 PM" {% if "06:00 PM - 08:00 PM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>06:00 PM - 08:00 PM {% if "06:00 PM - 08:00 PM" in full_slots %}(Full){% endif %}
-                    </option>
-                    <option value="08:00 PM - 10:00 PM" selected {% if "08:00 PM - 10:00 PM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>08:00 PM - 10:00 PM {% if "08:00 PM - 10:00 PM" in full_slots %}(Full){% endif %}
-                    </option>
-                    <option value="10:00 PM - 12:00 AM" {% if "10:00 PM - 12:00 AM" in full_slots %}disabled class="bg-gray-100 text-gray-400"{% endif %}>10:00 PM - 12:00 AM {% if "10:00 PM - 12:00 AM" in full_slots %}(Full){% endif %}
-                    </option>
+                    <option value="12:00 PM - 02:00 PM">12:00 PM - 02:00 PM</option>
+                    <option value="02:00 PM - 04:00 PM">02:00 PM - 04:00 PM</option>
+                    <option value="06:00 PM - 08:00 PM">06:00 PM - 08:00 PM</option>
+                    <option value="08:00 PM - 10:00 PM" selected>08:00 PM - 10:00 PM</option>
+                    <option value="10:00 PM - 12:00 AM">10:00 PM - 12:00 AM</option>
                 </select>
             </div>
         </div>
@@ -83,25 +78,12 @@
         
         const dateInput = document.getElementById('booking-date');
         if (dateInput) {
-            // Past dates ko disable karne ke liye min attribute set karein
+            // Past dates ko disable karne ke liye min attribute set kiya
             dateInput.setAttribute('min', minDateString);
             
-            // Check karein agar URL mein pehle se koi date selected hai
-            const urlParams = new URLSearchParams(window.location.search);
-            const selectedDate = urlParams.get('date');
-            
-            if (selectedDate) {
-                dateInput.value = selectedDate;
-            } else {
-                dateInput.value = minDateString;
-            }
-
-            // Jab user date change kare, to naye date parameter ke saath page auto-reload ho
-            dateInput.addEventListener('change', function() {
-                window.location.href = `?date=${this.value}`;
-            });
+            // Default aaj ki date set ho jayegi bina kisi reload network request ke
+            dateInput.value = minDateString;
         }
     });
 </script>
-
 {% endblock %}

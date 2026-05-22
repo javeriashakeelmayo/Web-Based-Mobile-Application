@@ -32,21 +32,21 @@ def book_table(request):
         guests_val = request.POST.get('guests')
         time_val = request.POST.get('time')
         
-        Booking.objects.create(
+        # 1. Booking object ko create kar ke variable mein store kiya
+        new_booking = Booking.objects.create(
             name=name_val, phone=phone_val, date=date_val, 
             guests=guests_val, time_slot=time_val
         )
-        return render(request, 'core/booking_success.html')
+        
+        # 2. Template ko render karte waqt naye booking object ko context mein pass kiya
+        return render(request, 'core/booking_success.html', {'booking': new_booking})
 
     # --- GET Request Logic (Dynamic Date Handling) ---
     from datetime import date
     
-    # 1. URL se check karein agar user ne koi date select ki hai (?date=YYYY-MM-DD)
-    # Agar nahi ki, to default aaj ki tareekh uthayein
     target_date_str = request.GET.get('date')
     if target_date_str:
         try:
-            # String date ko standard Python date object mein convert karein
             from datetime import datetime
             target_date = datetime.strptime(target_date_str, '%Y-%m-%d').date()
         except ValueError:
@@ -54,18 +54,18 @@ def book_table(request):
     else:
         target_date = date.today()
 
-    # 2. Ab specific selected target_date ke booked slots database se filter karein
     full_slots_query = Booking.objects.filter(date=target_date)\
                                       .values('time_slot')\
                                       .annotate(total=Count('id'))\
-                                      .filter(total__gte=5) # 5 ya 5 se zyada bookings par full
+                                      .filter(total__gte=5) 
     
     full_slots = [slot['time_slot'] for slot in full_slots_query]
 
     return render(request, 'core/booking.html', {'full_slots': full_slots})
 
 def booking_success_view(request):
-    return render(request, 'core/booking_success.html')
+    latest_booking = Booking.objects.last()
+    return render(request, 'core/booking_success.html', {'booking': latest_booking})
 
 def deals_view(request):
     return render(request, 'core/deals.html')
